@@ -1,0 +1,22 @@
+[Unit]
+Description=Influxdb2 instance
+Documentation=https://docs.influxdata.com/influxdb
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=influxdb
+Group=influxdb
+Type=simple
+Restart=on-failure
+WorkingDirectory={{ install_dir }}
+ExecStart={{ install_dir }}/influxd \
+  --bolt-path=/var/lib/influxdb2/bolt.db \
+  --sqlite-path=/var/lib/influxdb2/influxd.sqlite \
+  --engine-path=/var/lib/influxdb2/engine
+
+LimitNOFILE=10000
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

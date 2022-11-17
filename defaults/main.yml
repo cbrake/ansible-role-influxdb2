@@ -1,0 +1,4 @@
+ver: 2.5.1
+tarball_loc: /root/influxdb-{{ ver }}.tar.gz
+install_base: /opt/influxdb2-{{ ver }}
+install_dir: "{{ install_base }}/influxdb2_linux_amd64"

@@ -1,0 +1,52 @@
+- name: create install dir
+  file:
+    path: "{{ install_base }}"
+    state: directory
+
+- name: creat influxdb group
+  group:
+    name: influxdb
+    state: present
+
+- name: create influxdb user
+  user:
+    name: influxdb
+    group: influxdb
+    createhome: false
+
+- name: fetch influxdb
+  get_url:
+    url:
+      https://dl.influxdata.com/influxdb/releases/influxdb2-{{ ver
+      }}-linux-amd64.tar.gz
+    dest: "{{ tarball_loc }}"
+  register: fetch
+
+- name: extract influxdb
+  unarchive:
+    src: "{{ tarball_loc }}"
+    dest: "{{ install_base }}"
+    copy: no
+    owner: influxdb
+    group: influxdb
+  when: fetch.changed
+  notify: restart influxdb2
+
+- name: create dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: influxdb
+  with_items:
+    - /var/lib/influxdb2
+    - /var/lib/influxdb2/engine
+    - "{{ install_base }}"
+
+- name: influxdb service file
+  template: src=influxdb2.service.j2 dest=/etc/systemd/system/influxdb2.service
+  notify:
+    - reload systemd
+    - restart influxdb2
+
+- name: start influxdb2
+  service: name=influxdb2 state=started enabled=yes
