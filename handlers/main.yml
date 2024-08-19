@@ -1,4 +1,4 @@
-- name: reload systemd
+- name: reload systemd influxdb2
   command: systemctl daemon-reload
 
 - name: restart influxdb2

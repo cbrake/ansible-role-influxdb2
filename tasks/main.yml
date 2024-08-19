@@ -1,4 +1,4 @@
-- name: create install dir
+- name: create install dir influxdb2
   file:
     path: "{{ install_base }}"
     state: directory
@@ -45,7 +45,7 @@
 - name: influxdb service file
   template: src=influxdb2.service.j2 dest=/etc/systemd/system/influxdb2.service
   notify:
-    - reload systemd
+    - reload systemd influxdb2
     - restart influxdb2
 
 - name: start influxdb2
